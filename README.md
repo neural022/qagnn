@@ -20,19 +20,31 @@ Webpage: [https://snap.stanford.edu/qagnn](https://snap.stanford.edu/qagnn)
 
 ## Usage
 ### 0. Dependencies
-Run the following commands to create a conda environment (assuming CUDA10.1):
+Run the following commands to create a conda environment (assuming CUDA11.3) with the following libraries:
+* Pytorch 1.11.0
+* Transformers 3.4.0
+* RTX 3090
+
 ```bash
-conda create -n qagnn python=3.7
-source activate qagnn
-pip install torch==1.8.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+conda create --name qagnn python=3.7
+activate qagnn
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
 pip install transformers==3.4.0
 pip install nltk spacy==2.1.6
 python -m spacy download en
 
+# for graph and scipy toolkit
+conda install networkx
+conda install install scipy
+
 # for torch-geometric
-pip install torch-scatter==2.0.7 -f https://pytorch-geometric.com/whl/torch-1.8.0+cu101.html
-pip install torch-sparse==0.6.9 -f https://pytorch-geometric.com/whl/torch-1.8.0+cu101.html
-pip install torch-geometric==1.7.0 -f https://pytorch-geometric.com/whl/torch-1.8.0+cu101.html
+pip install torch-geometric -f https://pytorch-geometric.com/whl/torch-1.11.0%2Bcu113.html
+```
+
+or setup environment with the following file:
+```
+conda env create -f /[your path]/environment.yml
+activate qagnn
 ```
 
 
@@ -82,6 +94,7 @@ The resulting file structure will look like:
 ```
 
 ### 2. Train QA-GNN
+Linux:
 For CommonsenseQA, run
 ```
 ./run_qagnn__csqa.sh
@@ -94,6 +107,20 @@ For MedQA-USMLE, run
 ```
 ./run_qagnn__medqa_usmle.sh
 ```
+Windows:
+For CommonsenseQA, run
+```
+run_qagnn__csqa.bat
+```
+For OpenBookQA, run
+```
+run_qagnn__obqa.bat
+```
+For MedQA-USMLE, run
+```
+run_qagnn__medqa_usmle.bat
+```
+
 As configured in these scripts, the model needs two types of input files
 * `--{train,dev,test}_statements`: preprocessed question statements in jsonl format. This is mainly loaded by `load_input_tensors` function in `utils/data_utils.py`.
 * `--{train,dev,test}_adj`: information of the KG subgraph extracted for each question. This is mainly loaded by `load_sparse_adj_data_with_contextnode` function in `utils/data_utils.py`.
